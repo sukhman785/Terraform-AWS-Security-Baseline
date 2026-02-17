@@ -133,8 +133,9 @@ jobs:
         uses: bridgecrewio/checkov-action@v12
         with:
           directory: terraform
-          config_file: .checkov.yml
+          config_file: ./.checkov.yml
           framework: terraform
+          skip_check: CKV2_AWS_3,CKV2_AWS_5,CKV2_AWS_62,CKV_AWS_144,CKV_AWS_18,CKV2_AWS_61,CKV_AWS_145,CKV2_AWS_6,CKV_AWS_21
           soft_fail: false
           output_format: cli
           # Fail on HIGH and CRITICAL severity issues

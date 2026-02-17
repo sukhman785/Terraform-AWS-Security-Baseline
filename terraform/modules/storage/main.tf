@@ -105,6 +105,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "secure_bucket" {
   rule {
     id     = "transition-old-versions"
     status = "Enabled"
+    filter {}
 
     abort_incomplete_multipart_upload {
       days_after_initiation = 7
@@ -132,6 +133,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "logging_bucket" {
   rule {
     id     = "logging-retention"
     status = "Enabled"
+    filter {}
 
     abort_incomplete_multipart_upload {
       days_after_initiation = 7
