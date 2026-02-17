@@ -1,3 +1,14 @@
+terraform {
+  required_version = ">= 1.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 5.0"
+    }
+  }
+}
+
 # KMS Key for encryption
 resource "aws_kms_key" "main" {
   description             = "KMS key for ${var.project_name} ${var.environment} encryption"

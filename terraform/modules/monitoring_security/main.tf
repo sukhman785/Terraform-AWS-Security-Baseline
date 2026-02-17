@@ -7,6 +7,10 @@ locals {
   bucket_name     = lower("${var.project_name}-${var.environment}-cloudtrail-${data.aws_caller_identity.current.account_id}")
 }
 
+#checkov:skip=CKV2_AWS_61:Lifecycle is implemented via a dedicated aws_s3_bucket_lifecycle_configuration resource.
+#checkov:skip=CKV_AWS_21:Versioning is implemented via a dedicated aws_s3_bucket_versioning resource.
+#checkov:skip=CKV2_AWS_6:Public access block is implemented via a dedicated aws_s3_bucket_public_access_block resource.
+#checkov:skip=CKV_AWS_145:KMS encryption is implemented via a dedicated aws_s3_bucket_server_side_encryption_configuration resource.
 resource "aws_s3_bucket" "cloudtrail" {
   count  = var.enable_runtime_security && var.enable_cloudtrail ? 1 : 0
   bucket = local.bucket_name
@@ -190,6 +194,7 @@ resource "aws_iam_role_policy" "cloudtrail" {
 }
 
 resource "aws_cloudtrail" "main" {
+  #checkov:skip=CKV2_AWS_10:CloudWatch integration is configured via cloud_watch_logs_group_arn and cloud_watch_logs_role_arn.
   count                         = var.enable_runtime_security && var.enable_cloudtrail ? 1 : 0
   name                          = local.cloudtrail_name
   s3_bucket_name                = aws_s3_bucket.cloudtrail[0].id

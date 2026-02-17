@@ -1,3 +1,14 @@
+terraform {
+  required_version = ">= 1.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 5.0"
+    }
+  }
+}
+
 # SECURITY GUARDRAIL: S3 bucket with public access blocked
 resource "aws_s3_bucket" "secure_bucket" {
   bucket = "${var.project_name}-${var.environment}-secure-bucket-${data.aws_caller_identity.current.account_id}"
