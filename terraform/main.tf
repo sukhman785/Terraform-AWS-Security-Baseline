@@ -50,10 +50,10 @@ module "security" {
 # Monitoring & Runtime Security Module
 module "monitoring_security" {
   source = "./modules/monitoring_security"
-  count  = var.enable_runtime_security ? 1 : 0
 
   project_name                  = var.project_name
   environment                   = var.environment
+  enable_runtime_security       = var.enable_runtime_security
   kms_key_arn                   = module.security.kms_key_arn
   enable_cloudtrail             = var.enable_cloudtrail
   enable_guardduty              = var.enable_guardduty

@@ -50,22 +50,22 @@ output "kms_key_arn" {
 # Runtime Security Outputs (conditional)
 output "cloudtrail_name" {
   description = "Name of CloudTrail trail (if runtime security is enabled)"
-  value       = var.enable_runtime_security ? module.monitoring_security[0].cloudtrail_name : null
+  value       = var.enable_runtime_security ? module.monitoring_security.cloudtrail_name : null
 }
 
 output "cloudtrail_bucket_id" {
   description = "ID of CloudTrail S3 bucket (if runtime security is enabled)"
-  value       = var.enable_runtime_security ? module.monitoring_security[0].cloudtrail_bucket_id : null
+  value       = var.enable_runtime_security ? module.monitoring_security.cloudtrail_bucket_id : null
 }
 
 output "guardduty_detector_id" {
   description = "GuardDuty detector ID (if runtime security is enabled)"
-  value       = var.enable_runtime_security ? module.monitoring_security[0].guardduty_detector_id : null
+  value       = var.enable_runtime_security ? module.monitoring_security.guardduty_detector_id : null
 }
 
 output "security_hub_enabled" {
   description = "Whether Security Hub is enabled"
-  value       = var.enable_runtime_security ? module.monitoring_security[0].security_hub_enabled : false
+  value       = var.enable_runtime_security ? module.monitoring_security.security_hub_enabled : false
 }
 
 # Compute Outputs (conditional)

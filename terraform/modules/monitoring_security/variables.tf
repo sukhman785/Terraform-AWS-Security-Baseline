@@ -13,6 +13,12 @@ variable "kms_key_arn" {
   type        = string
 }
 
+variable "enable_runtime_security" {
+  description = "Enable runtime security resources in this module"
+  type        = bool
+  default     = true
+}
+
 variable "enable_cloudtrail" {
   description = "Enable CloudTrail logging resources"
   type        = bool

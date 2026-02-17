@@ -8,7 +8,7 @@ locals {
 }
 
 resource "aws_s3_bucket" "cloudtrail" {
-  count  = var.enable_cloudtrail ? 1 : 0
+  count  = var.enable_runtime_security && var.enable_cloudtrail ? 1 : 0
   bucket = local.bucket_name
 
   tags = {
@@ -18,7 +18,7 @@ resource "aws_s3_bucket" "cloudtrail" {
 }
 
 resource "aws_s3_bucket_public_access_block" "cloudtrail" {
-  count  = var.enable_cloudtrail ? 1 : 0
+  count  = var.enable_runtime_security && var.enable_cloudtrail ? 1 : 0
   bucket = aws_s3_bucket.cloudtrail[0].id
 
   block_public_acls       = true
@@ -28,7 +28,7 @@ resource "aws_s3_bucket_public_access_block" "cloudtrail" {
 }
 
 resource "aws_s3_bucket_versioning" "cloudtrail" {
-  count  = var.enable_cloudtrail ? 1 : 0
+  count  = var.enable_runtime_security && var.enable_cloudtrail ? 1 : 0
   bucket = aws_s3_bucket.cloudtrail[0].id
 
   versioning_configuration {
@@ -37,7 +37,7 @@ resource "aws_s3_bucket_versioning" "cloudtrail" {
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "cloudtrail" {
-  count  = var.enable_cloudtrail ? 1 : 0
+  count  = var.enable_runtime_security && var.enable_cloudtrail ? 1 : 0
   bucket = aws_s3_bucket.cloudtrail[0].id
 
   rule {
@@ -50,7 +50,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "cloudtrail" {
 }
 
 data "aws_iam_policy_document" "cloudtrail_bucket_policy" {
-  count = var.enable_cloudtrail ? 1 : 0
+  count = var.enable_runtime_security && var.enable_cloudtrail ? 1 : 0
 
   statement {
     sid    = "AWSCloudTrailAclCheck"
@@ -100,13 +100,31 @@ data "aws_iam_policy_document" "cloudtrail_bucket_policy" {
 }
 
 resource "aws_s3_bucket_policy" "cloudtrail" {
-  count  = var.enable_cloudtrail ? 1 : 0
+  count  = var.enable_runtime_security && var.enable_cloudtrail ? 1 : 0
   bucket = aws_s3_bucket.cloudtrail[0].id
   policy = data.aws_iam_policy_document.cloudtrail_bucket_policy[0].json
 }
 
+resource "aws_s3_bucket_lifecycle_configuration" "cloudtrail" {
+  count  = var.enable_runtime_security && var.enable_cloudtrail ? 1 : 0
+  bucket = aws_s3_bucket.cloudtrail[0].id
+
+  rule {
+    id     = "cloudtrail-log-retention"
+    status = "Enabled"
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
+
+    noncurrent_version_expiration {
+      noncurrent_days = 365
+    }
+  }
+}
+
 resource "aws_cloudwatch_log_group" "cloudtrail" {
-  count             = var.enable_cloudtrail ? 1 : 0
+  count             = var.enable_runtime_security && var.enable_cloudtrail ? 1 : 0
   name              = "/aws/cloudtrail/${var.project_name}-${var.environment}"
   retention_in_days = var.cloudtrail_log_retention_days
   kms_key_id        = var.kms_key_arn
@@ -118,8 +136,9 @@ resource "aws_cloudwatch_log_group" "cloudtrail" {
 }
 
 resource "aws_sns_topic" "cloudtrail" {
-  count = var.enable_cloudtrail ? 1 : 0
-  name  = "${var.project_name}-${var.environment}-cloudtrail-alerts"
+  count             = var.enable_runtime_security && var.enable_cloudtrail ? 1 : 0
+  name              = "${var.project_name}-${var.environment}-cloudtrail-alerts"
+  kms_master_key_id = var.kms_key_arn
 
   tags = {
     Name        = "${var.project_name}-${var.environment}-cloudtrail-alerts"
@@ -128,7 +147,7 @@ resource "aws_sns_topic" "cloudtrail" {
 }
 
 resource "aws_iam_role" "cloudtrail" {
-  count = var.enable_cloudtrail ? 1 : 0
+  count = var.enable_runtime_security && var.enable_cloudtrail ? 1 : 0
   name  = "${var.project_name}-${var.environment}-cloudtrail-role"
 
   assume_role_policy = jsonencode({
@@ -151,7 +170,7 @@ resource "aws_iam_role" "cloudtrail" {
 }
 
 resource "aws_iam_role_policy" "cloudtrail" {
-  count = var.enable_cloudtrail ? 1 : 0
+  count = var.enable_runtime_security && var.enable_cloudtrail ? 1 : 0
   name  = "${var.project_name}-${var.environment}-cloudtrail-to-cloudwatch"
   role  = aws_iam_role.cloudtrail[0].id
 
@@ -171,7 +190,7 @@ resource "aws_iam_role_policy" "cloudtrail" {
 }
 
 resource "aws_cloudtrail" "main" {
-  count                         = var.enable_cloudtrail ? 1 : 0
+  count                         = var.enable_runtime_security && var.enable_cloudtrail ? 1 : 0
   name                          = local.cloudtrail_name
   s3_bucket_name                = aws_s3_bucket.cloudtrail[0].id
   include_global_service_events = true
@@ -193,7 +212,7 @@ resource "aws_cloudtrail" "main" {
 }
 
 resource "aws_guardduty_detector" "main" {
-  count  = var.enable_guardduty ? 1 : 0
+  count  = var.enable_runtime_security && var.enable_guardduty ? 1 : 0
   enable = true
 
   tags = {
@@ -203,5 +222,5 @@ resource "aws_guardduty_detector" "main" {
 }
 
 resource "aws_securityhub_account" "main" {
-  count = var.enable_security_hub ? 1 : 0
+  count = var.enable_runtime_security && var.enable_security_hub ? 1 : 0
 }
