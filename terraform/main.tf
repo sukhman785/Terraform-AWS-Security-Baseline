@@ -68,7 +68,6 @@ module "compute" {
 
   project_name          = var.project_name
   environment           = var.environment
-  vpc_id                = module.networking.vpc_id
   public_subnet_ids     = module.networking.public_subnet_ids
   security_group_ids    = [module.networking.bastion_security_group_id]
   instance_profile_name = module.iam.instance_profile_name

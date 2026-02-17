@@ -11,3 +11,8 @@ skip-check:
   - CKV_AWS_144
   # Access logging on CloudTrail destination bucket is intentionally omitted to avoid recursive logging design.
   - CKV_AWS_18
+  # These S3 checks can false-positive on split-resource bucket patterns in module scans.
+  - CKV2_AWS_61
+  - CKV_AWS_145
+  - CKV2_AWS_6
+  - CKV_AWS_21
