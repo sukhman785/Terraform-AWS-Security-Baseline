@@ -1,4 +1,4 @@
-# Secure AWS Foundation – Infrastructure Guardrails & DevSecOps Baseline
+# Terraform AWS Security Baseline
 
 ![Terraform Security Validation](https://github.com/sukhman785/Secure-AWS-Foundation-Infrastructure-Guardrails-DevSecOps-Baseline/actions/workflows/terraform-security.yml/badge.svg)
 
