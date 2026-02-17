@@ -82,7 +82,7 @@ terraform apply tfplan
 │       ├── iam/             # IAM roles and policies
 │       └── security/        # Security baseline configurations
 ├── .github/workflows/       # CI/CD pipelines
-├── docs/                    # Documentation
+├── tests/                   # Guardrail and verification tests
 └── examples/                # Usage examples
 ```
 
@@ -113,7 +113,7 @@ This project does **not** aim to:
 
 ## Contributing
 
-See [CONTRIBUTING.md](./docs/CONTRIBUTING.md) for guidelines.
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
 
 ## License
 
